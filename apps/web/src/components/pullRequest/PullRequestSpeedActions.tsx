@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import { useAtomValue } from "@effect/atom-react";
 import type { PullRequestAction, PullRequestSummary } from "@t3tools/contracts";
 import { createContext, use, type ReactNode } from "react";
@@ -45,6 +46,7 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
   sweeping?: boolean;
   onCloseSweepStart?: (entry: Entry, event: PointerEvent) => void;
 }) {
+  const t = useT();
   const canWrite = useAtomValue(
     pullRequestEnvironment.runAction.permissionAtom(entry.environmentId),
   );
@@ -68,7 +70,7 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
         (method) => detail.mergeCapabilities[method],
       );
       if (allowed.length === 0)
-        throw new Error("No merge method is available for this repository.");
+        throw new Error(t("review.extra.no.merge.method.is.available.for.this.repository"));
       return resolvePullRequestMergeMethod(
         allowed,
         null,
@@ -84,10 +86,13 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
     <SpeedModeGroup
       busy={busy}
       pending={actionPending || closing}
-      label={`Quick actions for ${terminology.singular} #${entry.number}`}
+      label={t("review.pr.quickActionsFor", {
+        term: terminology.singular,
+        number: entry.number,
+      })}
     >
       {actions.map((action) => {
-        const label = ACTIONS[action].label;
+        const label = t(ACTIONS[action].labelKey);
         const Icon = ACTIONS[action].Icon;
         return (
           <Tooltip key={action}>
@@ -112,10 +117,10 @@ export function PullRequestSpeedActions<Entry extends PullRequestSpeedActionEntr
             </TooltipTrigger>
             <TooltipPopup>
               {action === "merge" && entry.stack
-                ? `Open this ${terminology.singular} to merge its stack`
+                ? t("review.pr.openToMergeStack", { term: terminology.singular })
                 : action === "close" && onCloseSweepStart
-                  ? "Close immediately, or drag across rows to close several"
-                  : `${label} immediately`}
+                  ? t("review.extra.close.immediately.or.drag.across.rows.to.close")
+                  : t("review.pr.immediately", { label })}
             </TooltipPopup>
           </Tooltip>
         );
@@ -164,8 +169,20 @@ function SpeedModeGroup({
 }
 
 const ACTIONS = {
-  close: { label: "Close", Icon: PullRequestGlyph.closed },
-  merge: { label: "Merge", Icon: PullRequestGlyph.merged },
-  ready: { label: "Ready for review", Icon: PullRequestGlyph.pullRequest },
-  reopen: { label: "Reopen", Icon: PullRequestGlyph.reopen },
+  close: {
+    labelKey: "review.extra.close",
+    Icon: PullRequestGlyph.closed,
+  },
+  merge: {
+    labelKey: "review.extra.merge",
+    Icon: PullRequestGlyph.merged,
+  },
+  ready: {
+    labelKey: "review.extra.ready.for.review",
+    Icon: PullRequestGlyph.pullRequest,
+  },
+  reopen: {
+    labelKey: "review.extra.reopen",
+    Icon: PullRequestGlyph.reopen,
+  },
 } as const;

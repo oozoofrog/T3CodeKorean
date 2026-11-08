@@ -1,4 +1,6 @@
+import { useT } from "~/hooks/useI18n";
 /* oxlint-disable react/no-array-index-key -- Text spans retain their order within an immutable page. */
+import { translateNow } from "~/lib/translateNow";
 /* oxlint-disable react/no-unstable-nested-components -- These callbacks return overlays, and are invoked as render functions. */
 import { Tooltip, TooltipTrigger, TooltipPopup } from "~/components/ui/tooltip";
 import { Fragment, useEffect, useRef, useState } from "react";
@@ -25,6 +27,7 @@ export default function WordDocument(props: {
   onDetails: (text: string) => void;
   onError: (cause: unknown) => void;
 }) {
+  const t = useT();
   const { onError, bytes, onDetails } = props;
   const [opened, setOpened] = useState<Opened>();
   const scroll = useRef<((index: number, y?: number) => void) | null>(null);
@@ -69,7 +72,8 @@ export default function WordDocument(props: {
         while (!controller.signal.aborted) {
           const step = await engine.call("layout", undefined, { signal: controller.signal });
           if (!step.done) continue;
-          if (step.pages.length > 1000) throw new Error("Preview limited to 1,000 pages.");
+          if (step.pages.length > 1000)
+            throw new Error(translateNow("review.extra.preview.limited.to.1.000.pages"));
           setOpened({ pages: step.pages, paint, engine });
           onDetails(`${step.pages.length} pages`);
           break;
@@ -98,7 +102,7 @@ export default function WordDocument(props: {
     <OfficePages
       pages={opened.pages}
       paint={opened.paint}
-      label="Page"
+      label={t("review.extra.page")}
       scrollRef={scroll}
       onError={onError}
       overlay={(index) => (

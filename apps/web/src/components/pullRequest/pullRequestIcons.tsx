@@ -1,3 +1,4 @@
+import type { MessageKey } from "@t3tools/client-runtime/i18n";
 import {
   GitMergeIcon,
   GitPullRequestArrowIcon,
@@ -32,23 +33,26 @@ export interface PullRequestStatePresentation {
 
 export const PULL_REQUEST_STATE_PRESENTATION = {
   open: {
-    label: "Open",
+    labelKey: "review.extra.open",
     toneClassName: "text-emerald-600 dark:text-emerald-300/90",
     Icon: PullRequestGlyph.pullRequest,
   },
   draft: {
-    label: "Draft",
+    labelKey: "review.extra.draft",
     toneClassName: "text-zinc-500 dark:text-zinc-400/80",
     Icon: PullRequestGlyph.draft,
   },
   closed: {
-    label: "Closed",
+    labelKey: "review.extra.closed",
     toneClassName: "text-red-600 dark:text-red-300/90",
     Icon: PullRequestGlyph.closed,
   },
   merged: {
-    label: "Merged",
+    labelKey: "review.extra.merged",
     toneClassName: "text-violet-600 dark:text-violet-300/90",
     Icon: PullRequestGlyph.merged,
   },
-} as const satisfies Record<PullRequestState | "draft", PullRequestStatePresentation>;
+} as const satisfies Record<
+  PullRequestState | "draft",
+  Omit<PullRequestStatePresentation, "label"> & { labelKey: MessageKey }
+>;

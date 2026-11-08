@@ -31,6 +31,7 @@ import {
 } from "./composerDraftStore";
 import { startDefaultThemeAdoption } from "./hooks/useDefaultTheme";
 import { startEnvironmentThemeRepaint } from "./hooks/useEnvironmentTheme";
+import { startDocumentLanguage } from "./hooks/useI18n";
 import { readLocalStorageValue, subscribeLocalStorageKey } from "./hooks/useLocalStorage";
 import { startHostEnvironmentLookup } from "./state/primaryEnvironment";
 import {
@@ -180,6 +181,7 @@ export function startAppServices(): AppRouter {
   installDesktopPasteAsText(window.desktopBridge, window);
 
   startClientAppearance();
+  startDocumentLanguage();
   startDocumentTitle();
   startHostEnvironmentLookup();
   startEnvironmentThemeRepaint();

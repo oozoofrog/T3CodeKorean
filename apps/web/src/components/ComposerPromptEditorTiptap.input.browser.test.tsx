@@ -25,6 +25,10 @@ import {
   type ComposerPromptEditorProps,
 } from "./ComposerPromptEditorTiptap";
 
+import { DEFAULT_CLIENT_SETTINGS } from "@t3tools/contracts/settings";
+import { replaceClientSettingsSnapshot } from "../hooks/clientSettingsStore";
+import { startDocumentLanguage, useT } from "../hooks/useI18n";
+
 const babysit: ServerProviderSkill = {
   name: "babysit",
   path: "/skills/babysit/SKILL.md",
@@ -42,6 +46,7 @@ function Composer({
   skills: ReadonlyArray<ServerProviderSkill>;
   onChange?: ComposerPromptEditorProps["onChange"] | undefined;
 }) {
+  const t = useT();
   const [prompt, setPrompt] = useState({ value, cursor: value.length });
   return (
     <ComposerPromptEditor
@@ -52,7 +57,7 @@ function Composer({
       contextRecords={new Map()}
       skills={skills}
       disabled={false}
-      placeholder=""
+      placeholder={t("chat.composer.placeholder.default")}
       onChange={(...args) => {
         setPrompt({ value: args[0], cursor: args[1] });
         onChange?.(...args);
@@ -790,4 +795,56 @@ describe("an Arabic line", () => {
       box.left + box.width / 2,
     );
   });
+});
+
+it("switches interface language without losing the composer document, selection or undo history", async () => {
+  replaceClientSettingsSnapshot(DEFAULT_CLIENT_SETTINGS);
+  await using screen = await mountEditor("Keep /tmp/한국어.ts and gpt-6.1-sol");
+  using systemLanguage = vi.spyOn(navigator, "language", "get").mockReturnValue("ko_KR");
+  const previousLang = document.documentElement.lang;
+  const stopDocumentLanguage = startDocumentLanguage();
+  try {
+    const editor = screen.editor;
+    await act(() => {
+      editor.commands.focus("end");
+      editor.commands.insertContent(" — 초안");
+    });
+    const doc = editor.state.doc;
+    const selection = editor.state.selection.toJSON();
+    const undo = undoDepth(editor.state);
+    await act(() =>
+      replaceClientSettingsSnapshot({ ...DEFAULT_CLIENT_SETTINGS, uiLanguage: "zh-Hans" }),
+    );
+    await expect
+      .element(screen.getByRole("textbox"))
+      .toHaveAttribute("aria-placeholder", "问点什么吧。@ 引用文件，$ 调用技能，/ 输入命令");
+    expect(document.documentElement.lang).toBe("zh-Hans");
+    expect(editorIn(screen.container)).toBe(editor);
+    expect(editor.state.doc.eq(doc)).toBe(true);
+    expect(editor.state.selection.toJSON()).toEqual(selection);
+    expect(undoDepth(editor.state)).toBe(undo);
+    await act(() =>
+      replaceClientSettingsSnapshot({ ...DEFAULT_CLIENT_SETTINGS, uiLanguage: "ko" }),
+    );
+    expect(document.documentElement.lang).toBe("ko");
+    expect(editor.state.doc.eq(doc)).toBe(true);
+    await act(() =>
+      replaceClientSettingsSnapshot({ ...DEFAULT_CLIENT_SETTINGS, uiLanguage: "system" }),
+    );
+    await act(() => window.dispatchEvent(new Event("languagechange")));
+    expect(document.documentElement.lang).toBe("ko");
+    systemLanguage.mockReturnValue("zh-Hant-TW");
+    await act(() => window.dispatchEvent(new Event("languagechange")));
+    await expect
+      .element(screen.getByRole("textbox"))
+      .toHaveAttribute("aria-placeholder", "Ask anything. @ files, $ skills, / commands");
+    expect(document.documentElement.lang).toBe("en");
+    expect(editor.state.doc.eq(doc)).toBe(true);
+    expect(editor.state.selection.toJSON()).toEqual(selection);
+    expect(undoDepth(editor.state)).toBe(undo);
+  } finally {
+    stopDocumentLanguage();
+    await act(() => replaceClientSettingsSnapshot(DEFAULT_CLIENT_SETTINGS));
+    document.documentElement.lang = previousLang;
+  }
 });

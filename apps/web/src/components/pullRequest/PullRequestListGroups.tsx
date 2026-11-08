@@ -1,3 +1,5 @@
+import { useT } from "~/hooks/useI18n";
+import type { MessageKey } from "@t3tools/client-runtime/i18n";
 import type { EnvironmentId, PullRequestAction } from "@t3tools/contracts";
 import { EyeIcon, LayersIcon, PenLineIcon, UsersIcon, type LucideIcon } from "lucide-react";
 import { useDeferredValue, type RefCallback } from "react";
@@ -22,6 +24,12 @@ const GROUP_ICONS: Record<string, LucideIcon> = {
   others: UsersIcon,
 };
 
+const GROUP_LABEL_KEYS: Readonly<Record<string, MessageKey>> = {
+  authored: "review.extra.authored",
+  reviewRequested: "review.extra.review.requested",
+  others: "review.extra.others",
+};
+
 const MATCHED_ELSEWHERE_SCORE = 10;
 const FIRST_PAINT_ROWS = 24;
 
@@ -43,11 +51,13 @@ function PullRequestGroupHeader({
   group: { key: string; label: string };
   count: number;
 }) {
+  const t = useT();
+  const labelKey = GROUP_LABEL_KEYS[group.key];
   const Icon = GROUP_ICONS[group.key] ?? LayersIcon;
   return (
     <div className="flex items-center gap-2 px-3 pb-1 text-xs font-medium text-muted-foreground/70">
       <Icon aria-hidden className="size-3.5 shrink-0" />
-      <h2 className="shrink-0">{group.label}</h2>
+      <h2 className="shrink-0">{labelKey ? t(labelKey) : group.label}</h2>
       <span className="shrink-0 tabular-nums text-muted-foreground/50">{count}</span>
       <Separator className="min-w-2 flex-1" />
     </div>

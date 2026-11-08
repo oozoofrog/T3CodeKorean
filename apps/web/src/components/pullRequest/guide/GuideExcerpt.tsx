@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import type {
   DiffLineAnnotation,
   FileDiffContentsLoader,
@@ -143,6 +144,7 @@ export function GuideExcerpt({
   onOpenFile: (path: string) => void;
 }) {
   // Keep selections outside ExcerptDiff to survive head reloads.
+  const t = useT();
   const [draft, setDraft] = useState<ExcerptDraft | null>(null);
   const slice = excerptSlice(file, excerpt);
 
@@ -167,7 +169,8 @@ export function GuideExcerpt({
         />
       ) : loading ? (
         <p className="rounded-lg border border-border/60 px-3 py-2 text-xs text-muted-foreground">
-          Loading {excerpt.path}...
+          {t("review.extra.loading")}
+          {excerpt.path}...
         </p>
       ) : (
         <div className="flex items-center justify-between gap-3 rounded-lg border border-border/60 px-3 py-2 text-xs text-muted-foreground">
@@ -176,7 +179,7 @@ export function GuideExcerpt({
             {excerpt.end} are not in the loaded diff.
           </span>
           <Button size="xs" variant="outline" onClick={() => onOpenFile(excerpt.path)}>
-            Open in Code
+            {t("review.extra.open.in.code")}
           </Button>
         </div>
       )}
@@ -205,6 +208,7 @@ function ExcerptDiff({
   commenting: ExcerptCommenting | null;
   onOpenFile: (path: string) => void;
 }) {
+  const t = useT();
   const resolvedTheme = useRenderedAppearance();
   const loadExcerptFiles = excerptLoader(excerpt, slice.rows, loadDiffFiles);
 
@@ -267,7 +271,7 @@ function ExcerptDiff({
     const comment = buildDiffReviewComment({
       id: `pull-request-guide:${excerpt.path}:${draft.range.start}:${draft.range.end}`,
       sectionId: `pull-request-guide:${excerpt.path}`,
-      sectionTitle: "Review guide",
+      sectionTitle: t("review.extra.review.guide"),
       filePath: excerpt.path,
       fileDiff: file,
       range: draft.range,
@@ -327,13 +331,19 @@ function ExcerptDiff({
                 text=""
                 completionScope={commenting.canComment ? commenting.completionScope : null}
                 placeholder={
-                  commenting.canComment ? "Add a comment…" : "Ask the agent about these lines…"
+                  commenting.canComment
+                    ? "Add a comment…"
+                    : t("review.extra.ask.the.agent.about.these.lines")
                 }
-                submitLabel={commenting.canComment ? "Add to review" : "Ask agent"}
+                submitLabel={
+                  commenting.canComment
+                    ? t("review.extra.add.to.review")
+                    : t("review.extra.ask.agent")
+                }
                 {...(commenting.canComment && onAskAgent !== null
                   ? {
                       secondaryAction: {
-                        label: "Ask agent",
+                        label: t("review.extra.ask.agent"),
                         onAction: (text: string) => askAgent(text),
                       },
                     }
@@ -366,7 +376,7 @@ function ExcerptDiff({
             <Button
               size="icon-xs"
               variant="ghost-muted"
-              aria-label={`Open ${excerpt.path} in Code`}
+              aria-label={t("review.pr.openInCode", { path: excerpt.path })}
               onClick={() => onOpenFile(excerpt.path)}
             >
               <ArrowUpRightIcon aria-hidden />

@@ -1,3 +1,4 @@
+import { translateNow } from "~/lib/translateNow";
 import {
   parseScopedThreadKey,
   scopeProjectRef,
@@ -192,8 +193,9 @@ export async function navigateAfterThreadDeletion(navigate: () => Promise<void>)
     toastManager.add(
       stackedThreadToast({
         type: "error",
-        title: "Thread deleted, but navigation failed",
-        description: error instanceof Error ? error.message : "An error occurred.",
+        title: translateNow("misc.hooks.threadActions.navFailed"),
+        description:
+          error instanceof Error ? error.message : translateNow("misc.hooks.anErrorOccurred"),
       }),
     );
   }

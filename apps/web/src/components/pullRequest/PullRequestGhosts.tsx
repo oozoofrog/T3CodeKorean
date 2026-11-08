@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import type { PullRequestListEntry, PullRequestSummary } from "@t3tools/contracts";
 import {
   ArrowLeftIcon,
@@ -50,8 +51,13 @@ const DEFAULT_DETAIL_TABS = [
 ] as const;
 
 export function PullRequestListGhost({ rows = 7, caption }: { rows?: number; caption?: string }) {
+  const t = useT();
   return (
-    <div role="status" aria-label={caption ?? "Loading pull requests"} className="space-y-0.5">
+    <div
+      role="status"
+      aria-label={caption ?? t("review.extra.loading.pull.requests")}
+      className="space-y-0.5"
+    >
       {/* Outside the pulse so the explanation stays readable. */}
       {caption ? (
         <p className="px-3 pb-1 text-xs font-medium text-muted-foreground">{caption}</p>
@@ -101,6 +107,7 @@ export function PullRequestDetailGhost({
   onClose?: (() => void) | undefined;
   onCheckoutError?: ((error: Error) => void) | undefined;
 }) {
+  const t = useT();
   const seed = summary
     ? {
         ...entry,
@@ -110,15 +117,18 @@ export function PullRequestDetailGhost({
     : entry;
   const terminology = sourceControlClients.get(seed?.provider).changeRequest;
   const statePresentation = seed
-    ? resolvePullRequestState({
-        state: seed.state,
-        isDraft: seed.isDraft ?? false,
-      })
+    ? resolvePullRequestState(
+        {
+          state: seed.state,
+          isDraft: seed.isDraft ?? false,
+        },
+        t,
+      )
     : null;
   // Passing list rollups can omit workflows awaiting approval; wait for detail.
   const checksPresentation =
     seed?.checksState === "failing" || seed?.checksState === "pending"
-      ? pullRequestChecksStatePresentation(seed.checksState)
+      ? pullRequestChecksStatePresentation(seed.checksState, t)
       : null;
   const checkout = checkoutCommand ?? null;
   const changedFiles = summary?.changedFiles ?? null;
@@ -128,7 +138,7 @@ export function PullRequestDetailGhost({
   return (
     <div
       role="status"
-      aria-label={`Loading ${terminology.singular}`}
+      aria-label={t("review.pr.loadingTerm", { term: terminology.singular })}
       className={cn(
         "flex h-full min-h-0 flex-col overflow-hidden bg-background",
         !seed && "motion-safe:animate-skeleton",
@@ -143,7 +153,7 @@ export function PullRequestDetailGhost({
                 variant="ghost-muted"
                 className="-ml-1.5"
                 onClick={onBack}
-                aria-label="Back to this thread's pull requests"
+                aria-label={t("review.extra.back.to.this.thread.s.pull.requests")}
               >
                 <ArrowLeftIcon aria-hidden className="size-3.5" />
               </Button>
@@ -153,7 +163,10 @@ export function PullRequestDetailGhost({
                 <span className="min-w-0 truncate font-medium">{seed.repository}</span>
                 <InlineButton
                   onClick={() => void readLocalApi()?.shell.openExternal(seed.url)}
-                  aria-label={`Open ${terminology.singular} #${seed.number} on host`}
+                  aria-label={t("review.pr.openOnHost", {
+                    term: terminology.singular,
+                    number: seed.number,
+                  })}
                 >
                   <span className={statePresentation?.toneClassName}>#{seed.number}</span>
                   <ExternalLinkIcon aria-hidden className="size-2.5" />
@@ -173,7 +186,9 @@ export function PullRequestDetailGhost({
             size="icon-xs"
             variant="ghost"
             disabled
-            aria-label={`${capitalizeTerm(terminology.singular)} actions loading`}
+            aria-label={t("review.pr.actionsLoading", {
+              term: capitalizeTerm(terminology.singular),
+            })}
           >
             <EllipsisIcon aria-hidden className="size-4" />
           </Button>
@@ -181,7 +196,7 @@ export function PullRequestDetailGhost({
             <Button
               size="icon-xs"
               variant="ghost"
-              aria-label={`Collapse ${terminology.singular} panel`}
+              aria-label={t("review.pr.collapsePanel", { term: terminology.singular })}
               onClick={onClose}
             >
               <PanelRightIcon aria-hidden className="size-3.5" />
@@ -225,7 +240,9 @@ export function PullRequestDetailGhost({
                   <PullRequestCopyableCode
                     key={checkout}
                     value={checkout}
-                    target={`${terminology.singular} checkout command`}
+                    target={t("review.pr.checkoutCommand", {
+                      term: terminology.singular,
+                    })}
                     copyLabel="Copy checkout command"
                     copiedLabel="Checkout command copied"
                     className="ml-auto font-mono"
@@ -251,7 +268,7 @@ export function PullRequestDetailGhost({
                     key={seed.headBranch}
                     value={seed.headBranch}
                     target="branch name"
-                    copyLabel={`Copy ${terminology.singular} branch`}
+                    copyLabel={t("review.pr.copyBranch", { term: terminology.singular })}
                     copiedLabel="Branch name copied"
                     className="min-w-0 font-mono"
                   />
@@ -303,11 +320,16 @@ export function PullRequestDetailGhost({
             <div className="grid min-h-7 min-w-0 grid-cols-[6rem_minmax(0,1fr)] items-center gap-2 text-xs sm:min-h-6">
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <UsersIcon aria-hidden className="size-3.5" />
-                Reviewers
+                {t("review.extra.reviewers")}
               </span>
               <span className="flex min-w-0 items-center gap-1.5 text-foreground">
                 <GhostBar className="h-3 w-10" />
-                <Button size="icon-xs" variant="ghost" disabled aria-label="Reviewers loading">
+                <Button
+                  size="icon-xs"
+                  variant="ghost"
+                  disabled
+                  aria-label={t("review.extra.reviewers.loading")}
+                >
                   <UserPlusIcon aria-hidden className="size-3.5" />
                 </Button>
               </span>
@@ -315,7 +337,7 @@ export function PullRequestDetailGhost({
             <div className="grid min-h-7 min-w-0 grid-cols-[6rem_minmax(0,1fr)] items-center gap-2 text-xs sm:min-h-6">
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <TagIcon aria-hidden className="size-3.5" />
-                Labels
+                {t("review.extra.labels")}
               </span>
               <span className="flex min-w-0 flex-wrap items-center gap-1 text-foreground">
                 {entry?.labels ? (
@@ -329,7 +351,7 @@ export function PullRequestDetailGhost({
                       />
                     ))
                   ) : (
-                    <span className="text-muted-foreground">None</span>
+                    <span className="text-muted-foreground">{t("review.extra.none")}</span>
                   )
                 ) : (
                   <>
@@ -337,7 +359,12 @@ export function PullRequestDetailGhost({
                     <GhostBar className="h-4.5 w-20" />
                   </>
                 )}
-                <Button size="icon-xs" variant="ghost" disabled aria-label="Labels loading">
+                <Button
+                  size="icon-xs"
+                  variant="ghost"
+                  disabled
+                  aria-label={t("review.extra.labels.loading")}
+                >
                   <TagIcon aria-hidden className="size-3.5" />
                 </Button>
               </span>
@@ -348,7 +375,7 @@ export function PullRequestDetailGhost({
         <section>
           <div className="sticky top-0 z-10 flex w-full items-center bg-background pr-4">
             <div className="flex min-w-0 flex-1 items-center gap-1.5 px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-              <span>Description</span>
+              <span>{t("review.extra.description")}</span>
               <ChevronRightIcon
                 aria-hidden
                 className="size-3.5 rotate-90 text-muted-foreground/60"
@@ -371,10 +398,11 @@ export function PullRequestDetailGhost({
 }
 
 export function PullRequestPeopleGhost({ rows = 4 }: { rows?: number }) {
+  const t = useT();
   return (
     <div
       role="status"
-      aria-label="Loading people"
+      aria-label={t("review.extra.loading.people")}
       className="motion-safe:animate-skeleton space-y-1 p-1"
     >
       {Array.from({ length: rows }, (_, index) => (
@@ -388,10 +416,11 @@ export function PullRequestPeopleGhost({ rows = 4 }: { rows?: number }) {
 }
 
 export function PullRequestTimelineGhost({ rows = 6 }: { rows?: number }) {
+  const t = useT();
   return (
     <div
       role="status"
-      aria-label="Loading timeline"
+      aria-label={t("review.extra.loading.timeline")}
       className="motion-safe:animate-skeleton px-4 py-5"
     >
       <div className="relative ml-2 border-l border-border/70 pl-5">
@@ -414,10 +443,11 @@ export function PullRequestConversationGhost({
   rows?: number;
   terminology: ChangeRequestTerminology;
 }) {
+  const t = useT();
   return (
     <div
       role="status"
-      aria-label={`Loading ${terminology.singular} conversation`}
+      aria-label={t("review.pr.loadingConversation", { term: terminology.singular })}
       className="motion-safe:animate-skeleton space-y-4 py-2"
     >
       {Array.from({ length: rows }, (_, index) => (

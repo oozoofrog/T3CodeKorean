@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import type { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card";
 import { isAtomCommandInterrupted } from "@t3tools/client-runtime/state/runtime";
 import type { EnvironmentId, PullRequestRef } from "@t3tools/contracts";
@@ -46,6 +47,7 @@ export function PullRequestLinkPreview({
   onOpenFallback?: (url: string) => Promise<void>;
   fallback?: ReactNode;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const previewActionsRef = useRef<PreviewCardPrimitive.Root.Actions | null>(null);
   const [resolvingClick, setResolvingClick] = useState(false);
@@ -95,7 +97,7 @@ export function PullRequestLinkPreview({
   const state =
     card === null
       ? null
-      : resolvePullRequestState({ state: card.state, isDraft: card.isDraft ?? false });
+      : resolvePullRequestState({ state: card.state, isDraft: card.isDraft ?? false }, t);
   const authorLabel =
     card?.author === null
       ? "ghost"

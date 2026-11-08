@@ -12,6 +12,7 @@ import { PullRequestCandidatePicker } from "./PullRequestCandidatePicker";
 import { readableFailure } from "./pullRequestDetail.logic";
 import { pullRequestLabelColor } from "./pullRequestList.logic";
 
+import { useT } from "~/hooks/useI18n";
 function matches(candidate: PullRequestLabelCandidate, query: string): boolean {
   if (query.length === 0) return true;
   const needle = query.toLowerCase();
@@ -30,6 +31,7 @@ export function PullRequestLabelPicker({
   reference: PullRequestRef;
   allowed: boolean;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [pending, setPending] = useState<string | null>(null);
@@ -57,11 +59,11 @@ export function PullRequestLabelPicker({
       toastManager.add({
         type: "error",
         title: candidate.isApplied
-          ? `Could not take ${candidate.name} off`
-          : `Could not put ${candidate.name} on`,
+          ? t("review.pr.couldNotRemoveLabel", { name: candidate.name })
+          : t("review.pr.couldNotAddLabel", { name: candidate.name }),
         description: readableFailure(
           squashAtomCommandFailure(result),
-          "The host refused it. Check that you have triage access on this repository.",
+          t("review.extra.the.host.refused.it.check.that.you.have8"),
         ),
       });
       return;
@@ -71,7 +73,7 @@ export function PullRequestLabelPicker({
   return (
     <PullRequestCandidatePicker
       icon={<TagIcon className="size-3.5" />}
-      label="Change labels"
+      label={t("review.extra.change.labels")}
       allowed={allowed}
       disabledReason="Changing labels needs triage access on this repository"
       open={open}
@@ -107,7 +109,7 @@ export function PullRequestLabelPicker({
               ) : null}
             </span>
             {candidate.isApplied ? (
-              <CheckIcon aria-label="Applied" className="size-3.5 shrink-0" />
+              <CheckIcon aria-label={t("review.extra.applied")} className="size-3.5 shrink-0" />
             ) : null}
           </>
         );
