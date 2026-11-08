@@ -1,4 +1,13 @@
 export const koMessages = {
+  "review.pr.fileOne": "파일",
+  "review.pr.fileMany": "파일",
+  "review.pr.threadOne": "스레드",
+  "review.pr.threadMany": "스레드",
+  "review.pr.commentOne": "댓글",
+  "review.pr.commentMany": "댓글",
+  "review.pr.pluralSuffix": "",
+  "review.extra.others": "기타",
+  "review.extra.dismissed": "무효 처리됨",
   "review.diffs.comment.cancel": "취소",
   "review.diffs.comment.delete": "댓글 삭제",
   "review.diffs.comment.onLines": "{range}줄에 댓글 달기",

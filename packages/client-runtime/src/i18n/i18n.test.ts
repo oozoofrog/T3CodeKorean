@@ -56,14 +56,17 @@ describe("translateMessage", () => {
     expect(translateMessage("en", key, { other: "x" })).toBe("Settings · {section}");
   });
 
-  it("keeps Chinese keys and placeholders aligned with the English source", () => {
-    const placeholders = (value: string) =>
-      [...value.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
-    for (const key of Object.keys(localeMessages.en) as Array<keyof typeof localeMessages.en>) {
-      expect(localeMessages["zh-Hans"][key], key).toBeDefined();
-      expect(placeholders(localeMessages["zh-Hans"][key]!), key).toEqual(
-        placeholders(localeMessages.en[key]!),
-      );
-    }
-  });
+  it.each(["ko", "zh-Hans"] as const)(
+    "keeps %s keys and placeholders aligned with English",
+    (locale) => {
+      const placeholders = (value: string) =>
+        [...value.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
+      for (const key of Object.keys(localeMessages.en) as Array<keyof typeof localeMessages.en>) {
+        expect(localeMessages[locale][key], key).toBeDefined();
+        expect(placeholders(localeMessages[locale][key]!), key).toEqual(
+          placeholders(localeMessages.en[key]!),
+        );
+      }
+    },
+  );
 });

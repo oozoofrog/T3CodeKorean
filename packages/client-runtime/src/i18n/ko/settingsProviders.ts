@@ -11,16 +11,16 @@ export const koMessages = {
     "T3 Code의 지원 대상 사용량은 ChatGPT 요금제를 사용합니다. 공유 사용량과 크레딧 설정은 ChatGPT에서 관리하세요.",
   "settings.providers.chatgpt.welcome.providerOnEnvironment": "{environment}의 {provider}",
   "settings.providers.chatgpt.welcome.continue": "계속",
-  "settings.providers.cli.installError": "t3를 설치하지 못했습니다",
-  "settings.providers.cli.removeError": "t3를 제거하지 못했습니다",
+  "settings.providers.cli.installError": "{command} 설치에 실패했습니다",
+  "settings.providers.cli.removeError": "{command} 제거에 실패했습니다",
   "settings.providers.cli.genericError": "문제가 발생했습니다.",
   "settings.providers.cli.shadowed":
-    "새 터미널에서는 {path}의 다른 t3가 먼저 실행됩니다. T3 Code의 명령을 사용하려면 이를 제거하세요.",
-  "settings.providers.cli.notInstalled": "어떤 터미널에서든 `t3`로 T3 Code CLI를 실행하세요.",
+    "새 터미널에서는 {path}의 다른 {command} 명령이 먼저 실행됩니다. {app}의 명령을 사용하려면 이를 제거하세요.",
+  "settings.providers.cli.notInstalled": "어떤 터미널에서든 `{command}`로 {app} CLI를 실행하세요.",
   "settings.providers.cli.installedOnPath":
     "{path}에 설치되었습니다. 사용하려면 새 터미널을 여세요.",
   "settings.providers.cli.installedNotOnPath":
-    "{path}에 설치되었지만 아직 PATH에 없습니다. `t3`를 실행하려면 해당 폴더를 PATH에 추가하세요.",
+    "{path}에 설치되었지만 아직 PATH에 없습니다. `{command}` 명령을 실행하려면 해당 폴더를 PATH에 추가하세요.",
   "settings.providers.cli.install": "설치",
   "settings.providers.cli.remove": "제거",
   "settings.providers.multipleAccounts.note":
@@ -94,7 +94,7 @@ export const koMessages = {
     "{position}에 값이 없는 선택 항목이 있습니다.",
   "settings.providers.customModel.error.choiceTwice":
     '{position}: 선택 항목 "{choice}"이(가) 중복되었습니다.',
-  "settings.providers.cli.title": "t3 명령",
+  "settings.providers.cli.title": "{command} 명령",
   "settings.providers.usage.title": "사용량 제공업체",
   "settings.providers.usage.addHub": "허브 추가",
   "settings.providers.usage.noHubs": "구성된 허브가 없습니다.",

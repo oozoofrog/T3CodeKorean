@@ -52,6 +52,8 @@ Local and remote WebSocket contracts retain their upstream names. Existing upstr
 
 ## Language contributions
 
+Choose **Settings → Appearance → Interface → Language** to switch between English, 한국어, and 简体中文, or follow the system language. The choice is saved per device. English is the default and the fallback for untranslated text. The translated catalogs cover the shared web/desktop interface; native mobile screens and native desktop menus remain outside this translation pass.
+
 Contribute translations to this fork's message catalogs in `packages/client-runtime/src/i18n/`. Keep stable message keys, interpolation placeholders, and English fallback text intact. Check both short labels and longer text in their actual UI context. Avoid global search-and-replace of product names or code identifiers. New locales also need the supported-language configuration and selector wiring, plus a real-client check by the integrating maintainer. Please report translation issues to [this fork](https://github.com/oozoofrog/T3CodeKorean/issues), not upstream.
 
 ## Attribution and license

@@ -930,7 +930,7 @@ export const SETTINGS_SEARCH_ITEMS = [
   {
     id: "cli-command",
     titleKey: "settings.search.items.cli-command",
-    title: "t3 command",
+    title: "CLI command",
     to: "/settings/about",
     searchTerms: ["cli terminal shell path install command line"],
     desktopOnly: true,

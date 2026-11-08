@@ -1,6 +1,6 @@
 import type { UiLanguage } from "@t3tools/contracts";
 
-import { koMessages } from "./koMessages.ts";
+import { koCatalog } from "./ko/catalog.ts";
 
 import { enMessages as chatEn, zhHansMessages as chatZh } from "./messagesChat.ts";
 import { enMessages as diffsEn, zhHansMessages as diffsZh } from "./messagesDiffs.ts";
@@ -96,7 +96,7 @@ const zhCatalog: Partial<Record<MessageKey, string>> = {
 
 export const uiLocales = {
   en: { name: "English", language: "en", script: null, messages: enCatalog },
-  ko: { name: "한국어", language: "ko", script: null, messages: koMessages },
+  ko: { name: "한국어", language: "ko", script: null, messages: koCatalog },
   "zh-Hans": { name: "简体中文", language: "zh", script: "Hans", messages: zhCatalog },
 } satisfies Record<
   UiLocale,

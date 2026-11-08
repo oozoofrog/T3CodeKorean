@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { distribution } from "@t3tools/shared/distribution";
 
 import { useT } from "../../hooks/useI18n";
 
@@ -15,6 +16,7 @@ import { searchableSetting } from "./settingsSearch";
 
 export function CliCommandSettingsRow() {
   const t = useT();
+  const cliParams = { command: distribution.cliCommand, app: distribution.name };
   const bridge = getDesktopCliCommandBridge();
   const query = useEnvironmentQuery(bridge ? desktopCliCommandStateAtom : null);
   const state = query.data;
@@ -31,8 +33,8 @@ export function CliCommandSettingsRow() {
             type: "error",
             title:
               action === "install"
-                ? t("settings.providers.cli.installError")
-                : t("settings.providers.cli.removeError"),
+                ? t("settings.providers.cli.installError", cliParams)
+                : t("settings.providers.cli.removeError", cliParams),
             description:
               error instanceof Error ? error.message : t("settings.providers.cli.genericError"),
           }),
@@ -44,17 +46,20 @@ export function CliCommandSettingsRow() {
   if (!bridge || !state?.supported) return null;
   const installed = state.installedPath !== null;
   const description = state.shadowedBy
-    ? t("settings.providers.cli.shadowed", { path: state.shadowedBy })
+    ? t("settings.providers.cli.shadowed", { ...cliParams, path: state.shadowedBy })
     : !installed
-      ? t("settings.providers.cli.notInstalled")
+      ? t("settings.providers.cli.notInstalled", cliParams)
       : state.onPath
         ? t("settings.providers.cli.installedOnPath", { path: state.installedPath ?? "" })
-        : t("settings.providers.cli.installedNotOnPath", { path: state.installedPath ?? "" });
+        : t("settings.providers.cli.installedNotOnPath", {
+            ...cliParams,
+            path: state.installedPath ?? "",
+          });
 
   return (
     <SettingsRow
       {...searchableSetting("cli-command")}
-      title={t("settings.providers.cli.title")}
+      title={t("settings.providers.cli.title", cliParams)}
       description={description}
       control={
         <Button

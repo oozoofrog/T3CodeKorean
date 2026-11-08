@@ -1215,7 +1215,7 @@ export const koMessages = {
   "settings.search.items.thread-title-instructions": "스레드 제목 지침",
   "settings.search.items.app-version": "버전",
   "settings.search.items.update-track": "업데이트 채널",
-  "settings.search.items.cli-command": "t3 명령",
+  "settings.search.items.cli-command": "CLI 명령",
   "settings.search.items.mobile-app": "모바일 앱",
   "settings.search.items.privacy-policy": "개인정보 처리방침",
   "settings.search.items.telemetry-export": "OpenTelemetry 내보내기",

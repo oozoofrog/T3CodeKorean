@@ -21,8 +21,15 @@ function fixture(overrides = {}) {
   return { service: new CaptureService(options), snapshots: () => snapshots };
 }
 
-it("rejects other clients before looking at the active window", async () => {
-  const { service, snapshots } = fixture();
+it.each([
+  "com.t3tools.T3Code.SnapShot",
+  "com.t3tools.T3Code.Development.SnapShot",
+  "com.oozoofrog.t3codekorean.SnapShot",
+  "com.oozoofrog.t3codekorean.dev.SnapShot",
+])("authorizes %s and rejects other clients before capture", async (clientName) => {
+  const { service, snapshots } = fixture({
+    getNameOwner: async (name) => (name === clientName ? ":1.23" : null),
+  });
   await expect(service.capture(":1.99")).rejects.toThrow("Only T3 Code");
   expect(snapshots()).toBe(0);
   expect(await service.capture(":1.23")).toBe("pixels");

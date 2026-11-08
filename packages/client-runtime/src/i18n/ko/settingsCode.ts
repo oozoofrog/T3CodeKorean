@@ -1,4 +1,17 @@
 export const koMessages = {
+  "settings.code.tasks.newThreadEachRun": "실행할 때마다 새 스레드",
+  "settings.code.tasks.startedByFirstRun": "첫 실행에서 시작",
+  "settings.code.tasks.firstRunContinues":
+    "첫 실행에서는 아래 워크스페이스와 모델로 스레드를 시작합니다. 이후 실행은 해당 대화를 이어갑니다.",
+  "settings.code.tasks.firstRunFresh":
+    "첫 실행에서는 아래 워크스페이스와 모델로 스레드를 시작합니다. 이후 실행도 같은 스레드에 게시하지만, 이전 실행의 맥락 없이 새 세션에서 시작합니다.",
+  "settings.code.tasks.existingFresh":
+    "실행할 때마다 이 스레드에서 이전 실행의 맥락 없이 새 세션을 시작합니다.",
+  "settings.code.tasks.destinationThread": "대상 스레드",
+  "settings.code.tasks.searchThreads": "스레드 검색",
+  "settings.code.tasks.searchAllThreads": "모든 스레드 검색…",
+  "settings.code.tasks.noThreadsFound": "검색된 스레드가 없습니다.",
+  "settings.code.tasks.untitledThread": "제목 없는 스레드",
   "settings.code.projectActions.empty": "구성된 작업이 없습니다.",
   "settings.code.projectActions.badgeSetup": "설정",
   "settings.code.projectActions.badgeOnSettle": "마무리 시",
