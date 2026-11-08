@@ -1,3 +1,4 @@
+import { distribution } from "@t3tools/shared/distribution";
 import * as HostProcess from "@t3tools/shared/HostProcess";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
@@ -52,7 +53,7 @@ const setupBaseDir = Effect.fn("browserSetup.baseDir")(function* (explicit: Opti
     .pipe(Effect.orElseSucceed(() => ""));
   const home = entry.trim().split(":")[5];
   const path = yield* Path.Path;
-  return home ? path.join(home, ".t3") : yield* resolveBaseDir(undefined);
+  return home ? path.join(home, distribution.homeDirectory) : yield* resolveBaseDir(undefined);
 });
 
 const aptOffers = Effect.fn("browserSetup.aptOffers")(function* (name: string) {

@@ -1,3 +1,4 @@
+import { distribution, forkUpdateMessage } from "@t3tools/shared/distribution";
 import {
   DESKTOP_UPDATE_RESTART_MARKER_FILE,
   DesktopUpdateChannelSchema,
@@ -461,6 +462,19 @@ export const make = Effect.gen(function* () {
 
   const resolveDisabledReason = Effect.gen(function* () {
     const hasFeedConfig = yield* hasUpdateFeedConfig;
+    const feed = yield* Ref.get(appUpdateYmlConfigRef);
+    if (
+      !mockUpdates &&
+      policy.feedUrl === undefined &&
+      Option.isSome(feed) &&
+      !(
+        feed.value.provider === "github" &&
+        `${feed.value.owner}/${feed.value.repo}`.toLowerCase() ===
+          distribution.repository.toLowerCase()
+      )
+    ) {
+      return Option.some(forkUpdateMessage);
+    }
     return Option.fromNullishOr(
       getAutoUpdateDisabledReason({
         policy,

@@ -1,3 +1,4 @@
+import { distribution } from "@t3tools/shared/distribution";
 // @effect-diagnostics-next-line nodeBuiltinImport:off -- FileSystem.access has no execute check.
 import * as NodeFSP from "node:fs/promises";
 
@@ -151,7 +152,7 @@ export const make = Effect.gen(function* () {
 
   const firstOnPath = Effect.gen(function* () {
     for (const directory of pathEntries(env.PATH, ":")) {
-      const candidate = path.join(directory, "t3");
+      const candidate = path.join(directory, distribution.cliCommand);
       if (yield* isExecutableFile(candidate)) return Option.some(candidate);
     }
     return Option.none<string>();
@@ -173,7 +174,7 @@ export const make = Effect.gen(function* () {
         : Option.none<string>();
     }
     for (const directory of unixCandidates(environment.homeDirectory, environment.platform)) {
-      const link = path.join(directory, "t3");
+      const link = path.join(directory, distribution.cliCommand);
       if (yield* isOurLink(link)) return Option.some(link);
     }
     return Option.none<string>();
@@ -251,7 +252,7 @@ export const make = Effect.gen(function* () {
       ...candidates.filter((candidate) => onPath.includes(candidate)),
       ...candidates.filter((candidate) => !onPath.includes(candidate)),
     ]) {
-      const link = path.join(directory, "t3");
+      const link = path.join(directory, distribution.cliCommand);
       const created = (yield* exists(directory))
         ? yield* writableDirectory(directory)
         : yield* fs.makeDirectory(directory, { recursive: true }).pipe(
@@ -281,7 +282,7 @@ export const make = Effect.gen(function* () {
       return yield* state;
     }
     for (const directory of unixCandidates(environment.homeDirectory, environment.platform)) {
-      const link = path.join(directory, "t3");
+      const link = path.join(directory, distribution.cliCommand);
       if (yield* isOurLink(link)) {
         yield* fs.remove(link).pipe(Effect.mapError(() => fail(`Could not remove ${link}.`)));
       }

@@ -39,6 +39,7 @@ export interface UpdatesHarnessOptions {
   readonly installRecord?: string | undefined;
   readonly policy?: DesktopUpdatePolicy.UpdatePolicy;
   readonly appVersion?: string;
+  readonly appUpdateYml?: string;
   /** Starts from in-memory settings with this track saved, as after a restart. */
   readonly savedChannel?: DesktopAppSettings.DesktopSettings["updateChannel"];
   /** Adds a WSL backend beside the primary, as on a Windows host with WSL enabled. */
@@ -243,6 +244,8 @@ export function makeHarness(options: UpdatesHarnessOptions = {}) {
     path.endsWith(DesktopUpdates.DESKTOP_UPDATE_INSTALL_RECORD_FILE);
   const layerFileSystem = FileSystem.layerNoop({
     readFileString: (path) => {
+      if (path.endsWith("app-update.yml") && options.appUpdateYml !== undefined)
+        return Effect.succeed(options.appUpdateYml);
       const installRecord = isInstallRecord(path)
         ? (installRecords.get(path) ?? previousInstallRecord)
         : undefined;

@@ -1,3 +1,4 @@
+import { distribution } from "@t3tools/shared/distribution";
 import * as HostProcess from "@t3tools/shared/HostProcess";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
@@ -35,11 +36,10 @@ import {
   type ServiceState,
 } from "./serviceProtocol.ts";
 
-const BOOT_SERVICE_NAME = "t3code";
+const BOOT_SERVICE_NAME = distribution.slug;
 export const BOOT_SERVICE_UNIT_FILE = `${BOOT_SERVICE_NAME}.service`;
-// `.service` suffix keeps the label distinct from the desktop app's bundle id
-// (com.t3tools.t3code), so launchd and TCC records never collide.
-export const BOOT_SERVICE_LAUNCHD_LABEL = "com.t3tools.t3code.service";
+// Keep the service label distinct from the desktop bundle ID.
+export const BOOT_SERVICE_LAUNCHD_LABEL = `${distribution.id}.service`;
 export const BOOT_SERVICE_PLIST_FILE = `${BOOT_SERVICE_LAUNCHD_LABEL}.plist`;
 const BOOT_SERVICE_UNIT_ENV = "T3_BOOT_SERVICE_UNIT";
 export const BOOT_SERVICE_LOG_FILE = "boot-service.log";

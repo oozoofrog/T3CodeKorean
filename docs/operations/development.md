@@ -1,8 +1,11 @@
 # Development
 
+This is the unofficial oozoofrog T3CodeKorean fork. See [the fork README](../../README.md)
+for its app identity, manual updates, and unsigned local build instructions.
+
 ## First checkout
 
-Install `vp` using the [root README](../../README.md#install-vp). It provides the Node version
+Install `vp` using the [root README](../../README.md#build-and-start). It provides the Node version
 pinned in `package.json` (Node 26), so no separate Node install is needed. From the repository root:
 
 ```sh
@@ -16,6 +19,9 @@ a new browser.
 Prefer a container? See [Dev container](../internals/devcontainer.md) for VS Code and Codespaces setup.
 
 ## GitCafe mirror (optional)
+
+The following mirror instructions describe upstream maintenance. Keep this fork's `origin`
+pointing at `oozoofrog/T3CodeKorean`; do not apply these remote changes to the fork.
 
 GitHub is the source of truth. [git.cafe/pingdotgg/t3code](https://git.cafe/pingdotgg/t3code) is a
 two-way synced mirror with much higher API rate limits, which helps when many agents work at once.
@@ -65,13 +71,13 @@ Running `vp run dev` through an agent's own shell tool does not attach it to thi
 ### State and ports
 
 Linked worktrees default to their own `.t3/userdata`, even when `T3CODE_HOME` is set.
-The main checkout defaults to `~/.t3/dev`. An explicit `--home-dir` wins in both cases.
+The main checkout defaults to `~/.t3codekorean/dev`. An explicit `--home-dir` wins in both cases.
 The first start in a worktree seeds its empty database from a read-only copy of
-`~/.t3/userdata/statev2.sqlite` if the source is at most 500 MiB. Larger sources warn
+`~/.t3codekorean/userdata/statev2.sqlite` if the source is at most 500 MiB. Larger sources warn
 and dev starts with an empty database. `--no-seed` or `T3CODE_DEV_SEED=0` skips seeding.
-To copy a larger source, run `vp run migrate-dev-db` with dev stopped. It may use
+To copy a larger fork source, run `vp run migrate-dev-db --source ~/.t3codekorean/userdata/statev2.sqlite` with dev stopped. It may use
 substantial disk space before pruning.
-Never run a development server against the live `~/.t3/userdata`.
+Never run a development server against the live `~/.t3/userdata` or `~/.t3codekorean/userdata`.
 See [test data](../../AGENTS.md#test-data) for copying a consistent database snapshot.
 
 Read ports from the `[dev-runner]` output. Worktrees derive stable preferences from their paths,

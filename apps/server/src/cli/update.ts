@@ -1,3 +1,8 @@
+import {
+  automaticCliUpdatesEnabled,
+  distribution,
+  forkUpdateMessage,
+} from "@t3tools/shared/distribution";
 import * as HostProcess from "@t3tools/shared/HostProcess";
 import {
   CLI_RELEASE_BASE_URL_ENV,
@@ -323,7 +328,7 @@ const belongsToBootService = Effect.fn("cli.update.belongs_to_boot_service")(fun
   const runner = yield* ProcessRunner.ProcessRunner;
   if (platform === "linux") {
     const cgroup = yield* fs.readFileString(`/proc/${pid}/cgroup`).pipe(Effect.option);
-    return Option.isSome(cgroup) && cgroup.value.includes("/t3code.service");
+    return Option.isSome(cgroup) && cgroup.value.includes(`/${distribution.slug}.service`);
   }
   if (platform === "darwin") {
     const parent = yield* runner
@@ -379,6 +384,9 @@ export const runUpdate = Effect.fn("cli.update.run")(function* (input: {
     return yield* new CliUpdateError({
       reason: `'${input.requestedVersion}' is not an exact t3 version.`,
     });
+  }
+  if (!automaticCliUpdatesEnabled) {
+    return yield* new CliUpdateError({ reason: forkUpdateMessage });
   }
   const progress = createUpdateProgress();
   progress.status("Checking for updates...");

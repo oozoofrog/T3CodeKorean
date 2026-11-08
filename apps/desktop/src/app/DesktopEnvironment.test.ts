@@ -3,6 +3,7 @@ import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, describe, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
+import * as Option from "effect/Option";
 
 import * as DesktopEnvironment from "./DesktopEnvironment.ts";
 import * as DesktopConfig from "./DesktopConfig.ts";
@@ -68,8 +69,22 @@ describe("DesktopEnvironment", () => {
       );
       const production = yield* makeEnvironment();
 
-      assert.equal(development.stateDir, "/Users/alice/.t3/dev");
-      assert.equal(production.stateDir, "/Users/alice/.t3/userdata");
+      assert.equal(development.stateDir, "/Users/alice/.t3codekorean/dev");
+      assert.equal(production.stateDir, "/Users/alice/.t3codekorean/userdata");
+      assert.equal(production.branding.baseName, "T3CodeKorean");
+      assert.equal(production.appUserModelId, "com.oozoofrog.t3codekorean");
+      assert.notEqual(development.appUserModelId, production.appUserModelId);
+      const explicit = yield* makeEnvironment(
+        {},
+        {
+          T3CODE_HOME: "/custom/fork-data",
+          T3CODE_PORT: "4321",
+          T3CODE_DESKTOP_APP_USER_MODEL_ID: "custom.identity",
+        },
+      );
+      assert.equal(explicit.stateDir, "/custom/fork-data/userdata");
+      assert.equal(Option.getOrUndefined(explicit.configuredBackendPort), 4321);
+      assert.equal(explicit.appUserModelId, "custom.identity");
     }),
   );
 });

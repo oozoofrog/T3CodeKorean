@@ -1076,3 +1076,21 @@ describe("DesktopUpdates under a managed policy", () => {
     ).pipe(Effect.provide(Layer.merge(TestClock.layer(), harness.layer)));
   });
 });
+
+it.effect("refuses an upstream feed even in a packaged fork", () => {
+  const harness = makeHarness({
+    env: { T3CODE_DESKTOP_MOCK_UPDATES: "false" },
+    appUpdateYml: "provider: github\nowner: pingdotgg\nrepo: t3code\n",
+  });
+  return Effect.gen(function* () {
+    const updates = yield* DesktopUpdates.DesktopUpdates;
+    yield* updates.configure;
+    const result = yield* updates.check("manual");
+    assert.equal(result.state.status, "disabled");
+    assert.include(
+      Option.getOrElse(yield* updates.disabledReason, () => ""),
+      "T3CodeKorean",
+    );
+    assert.equal(harness.checkCount(), 0);
+  }).pipe(Effect.scoped, Effect.provide(harness.layer));
+});

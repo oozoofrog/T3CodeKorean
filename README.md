@@ -1,153 +1,59 @@
-# T3 Code
+# T3CodeKorean
 
-T3 Code is an "agent harness control surface". It enables control of the agents on your machine with a best-in-class mobile app ([iOS](https://apps.apple.com/us/app/t3-code-remote-claude-more/id6787819824), [Android](https://play.google.com/store/apps/details?id=com.t3tools.t3code)), [web app](https://app.t3.codes) and [Electron-based desktop app](https://t3.codes).
+An **unofficial personal multilingual fork** of [T3 Code](https://github.com/pingdotgg/t3code), maintained by [oozoofrog](https://github.com/oozoofrog). This repository is independent of T3 Tools and is not an official T3 Code release or Korean edition endorsed by the upstream maintainers.
 
-Works with your subscriptions on Claude Code, Codex, Cursor, Grok Build, OpenCode, Google Antigravity, and fx. If they're set up on your computer, T3 Code can control them.
+T3 Code is an open-source GUI for coding agents, with desktop, web, and mobile clients. It works with your existing provider subscriptions. This fork focuses on Korean and other UI languages while retaining the upstream server protocol and provider integrations. Translation coverage varies; English remains the fallback.
 
-## "Wait, what are you selling me?"
+## Build and start
 
-Nothing. We built T3 Code because we wanted the best possible development experience with agents. We were inspired by existing solutions like the Codex desktop app, Conductor, Claude Desktop and Cursor Glass, but none met our bar.
+Install [Vite+](https://viteplus.dev/), which manages the Node version pinned in `package.json`. Authenticate your chosen provider CLI before running agent turns. From this repository:
 
-We wanted something performant, remote-ready, and truly open. If we ever go the wrong direction, we want you to have everything you need to fork and build the editor that you want.
-
-## Installation
-
-> [!WARNING]
-> T3 Code currently supports Codex, Claude, Cursor, Grok Build, OpenCode, Antigravity, and fx. Install and authenticate at least one provider before use:
->
-> - Codex: install [Codex CLI](https://developers.openai.com/codex/cli) and run `codex login`
-> - Claude: install [Claude Code](https://claude.com/product/claude-code) and run `claude auth login`
-> - Cursor: install [Cursor CLI](https://cursor.com/cli) and run `agent login`
-> - Grok Build: install [Grok Build CLI](https://x.ai/cli) and run `grok login`
-> - OpenCode: install [OpenCode](https://opencode.ai) and run `opencode auth login`
-> - Antigravity: enable it in Settings, then use **Install Antigravity** and **Sign in with Google**. No CLI is required.
-> - fx: install [fx](https://fx.sh) and run `fx login` on the machine running the T3 Code server ([setup guide](./docs/user/providers-fx.md))
-
-### Command line
-
-```bash
-curl -fsSL https://t3.codes/install.sh | sh
-```
-
-On Windows, in PowerShell:
-
-```powershell
-irm https://t3.codes/install.ps1 | iex
-```
-
-Then run `t3` to start the server and open the local web app. `t3 service install` keeps it running in the background, `t3 update` moves to a newer release, and `t3 --help` has the full reference.
-
-To try it once without installing, run `npx t3@latest` instead.
-
-### Desktop app
-
-Install the latest version of the desktop app from [GitHub Releases](https://github.com/pingdotgg/t3code/releases), or from your favorite package registry:
-
-#### Windows (`winget`)
-
-```bash
-winget install T3Tools.T3Code
-```
-
-#### Windows (`scoop`)
-
-```bash
-scoop install extras/t3code
-```
-
-#### macOS (Homebrew)
-
-```bash
-brew install --cask t3-code
-```
-
-#### Debian, Ubuntu (`.deb`)
-
-Download the `.deb` from [GitHub Releases](https://github.com/pingdotgg/t3code/releases), then:
-
-```bash
-sudo apt install ./T3-Code-*.deb
-```
-
-#### Arch Linux (AUR)
-
-Stable:
-
-```bash
-yay -S t3code-bin
-```
-
-Nightly:
-
-```bash
-yay -S t3code-nightly-bin
-```
-
-The AUR packaging is maintained in this repository under [`packaging/aur`](./packaging/aur).
-
-#### Nix (nixpkgs)
-
-```bash
-nix profile add github:NixOS/nixpkgs/nixos-unstable#t3code
-```
-
-The package is maintained in [nixpkgs](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/by-name/t3/t3code)
-and includes the desktop app (`t3code-desktop`) and the `t3` command.
-See [Nix installation](./docs/user/install.md#nix-nixpkgs) for NixOS configuration and updates.
-
-## Some notes
-
-We are very very early in this project. Expect bugs.
-
-We are (mostly) not accepting contributions yet. Small fixes may be considered. Big features will not be.
-
-## Documentation
-
-Full docs live in [docs/](./docs). There's no docs site yet.
-
-- [FAQ](./docs/user/faq.md)
-- [Install and first run](./docs/user/install.md)
-- [Permission modes](./docs/user/permission-modes.md)
-- [Keyboard shortcuts](./docs/user/keybindings.md)
-- [Project settings](./docs/user/project-settings.md)
-- [Appearance preferences](./docs/user/appearance.md)
-- [Remote access from a phone or another machine](./docs/user/remote-access.md)
-- [Connect Claude Code, Codex, ChatGPT and other agents over MCP](./docs/user/outside-agents.md)
-- [Keeping app and server in sync](./docs/user/updating.md)
-- [Source control integrations](./docs/user/source-control.md)
-- Multiple accounts: [Codex](./docs/user/providers-codex.md) · [Claude](./docs/user/providers-claude.md)
-- [Run T3 Code as a background service](./docs/user/background-service.md)
-
-Building from source? Start at [docs/internals/overview.md](./docs/internals/overview.md).
-
-## If you REALLY want to contribute still.... read this first
-
-### Install `vp`
-
-T3 Code uses Vite+ so you'll need to install the global `vp` command-line tool.
-
-#### macOS / Linux
-
-```bash
-curl -fsSL https://vite.plus | bash
-```
-
-#### Windows
-
-```bash
-irm https://vite.plus/ps1 | iex
-```
-
-Checkout their getting started guide for more information: https://viteplus.dev/guide/
-
-### Install dependencies
-
-```bash
+```sh
 vp i
+vp run dev --no-seed
 ```
 
-Read [CONTRIBUTING.md](./CONTRIBUTING.md) before reporting a bug or opening a PR.
+Open the pairing URL printed by the dev runner. Linked worktrees use their own `.t3` directory; `--no-seed` starts without importing an existing conversation database. For Electron development, run `vp run dev:desktop --no-seed`.
 
-Have a feature request? Start an [Ideas discussion](https://github.com/pingdotgg/t3code/discussions/categories/ideas).
+To build and run the local production desktop client:
 
-Need support? Join the [Discord](https://discord.gg/jn4EGJjrvv).
+```sh
+vp run build:desktop
+vp run start:desktop
+```
+
+For an unsigned local Apple Silicon macOS artifact, run on macOS:
+
+```sh
+vp run dist:desktop:artifact --platform mac --target dmg --arch arm64 --signed false
+```
+
+The artifact command builds the desktop and bundled server, stages production dependencies and native helpers, and writes artifacts under `release/` by default. `--target dir` produces an unpacked `.app`; use `--skip-build` only after rebuilding the current sources. Intel macOS uses `--arch x64`. See [development operations](docs/operations/development.md) for upstream build details.
+
+An unsigned local build is not a signed or notarized public release. macOS may require an explicit launch approval. Public distribution needs your own Apple Developer signing identity, notarization credentials, and provisioning/associated-domain configuration for passkeys; upstream credentials and entitlements do not grant access to this fork. Linux and Windows packaging remain available but require their platform build tools and verification.
+
+## Independent installation
+
+| Setting                      | Fork default                                                                |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| Desktop display name         | T3CodeKorean (Beta), or Nightly/Dev                                         |
+| Bundle/application ID        | `com.oozoofrog.t3codekorean`                                                |
+| App URL schemes              | `t3code-korean://`, `t3code-korean-dev://`                                  |
+| Data and saved settings      | `~/.t3codekorean/userdata`                                                  |
+| Electron browser profile     | `t3codekorean` / `t3codekorean-dev` under the OS application-data directory |
+| Preferred server port        | `3783` (automatic selection can choose another free port)                   |
+| Optional desktop CLI command | `t3korean`                                                                  |
+
+`T3CODE_HOME`, `T3CODE_PORT`, CLI `--base-dir`/`--port`, and other explicit upstream configuration remain supported. Choosing the official application's directory explicitly shares its state; use a separate directory for each running install. The fork does not automatically migrate upstream preferences or credentials. Its launchers and background-service IDs are separate from the official install.
+
+Automatic desktop updates have no default feed. Packaging ignores `GITHUB_REPOSITORY`; an explicit `T3CODE_DESKTOP_UPDATE_REPOSITORY=oozoofrog/T3CodeKorean` can embed a fork feed when compatible fork releases exist. Managed update mirrors and local mock-update testing remain explicit options. The desktop refuses a baked-in official update feed. CLI self-update is disabled: rebuild and install this fork manually. Official installers, Homebrew casks, npm `t3`, and upstream download links install **upstream T3 Code**, not this fork.
+
+Local and remote WebSocket contracts retain their upstream names. Existing upstream app links can still be parsed, but the fork registers only its own OS URL schemes. Hosted upstream sign-in redirects and services may require fork-specific configuration; they are not promised to recognize this fork's bundle ID or URL schemes.
+
+## Language contributions
+
+Contribute translations to this fork's message catalogs in `packages/client-runtime/src/i18n/`. Keep stable message keys, interpolation placeholders, and English fallback text intact. Check both short labels and longer text in their actual UI context. Avoid global search-and-replace of product names or code identifiers. New locales also need the supported-language configuration and selector wiring, plus a real-client check by the integrating maintainer. Please report translation issues to [this fork](https://github.com/oozoofrog/T3CodeKorean/issues), not upstream.
+
+## Attribution and license
+
+T3CodeKorean is based on work by T3 Tools and the T3 Code contributors. The original [MIT license](LICENSE) and [third-party license configuration](third-party-licenses.config.json) remain in effect. See [FORK-NOTICE.md](FORK-NOTICE.md). Upstream documentation and artwork may retain the T3 Code name as attribution and technical context.

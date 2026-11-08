@@ -1,3 +1,4 @@
+import { distribution, desktopScheme } from "@t3tools/shared/distribution";
 import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
 import * as NodeModule from "node:module";
@@ -13,11 +14,11 @@ const repoRoot = NodePath.resolve(desktopDir, "..", "..");
 const devBundleIdSuffix = NodePath.basename(repoRoot)
   .toLowerCase()
   .replaceAll(/[^a-z0-9]+/g, "");
-const APP_DISPLAY_NAME = isDevelopment ? "T3 Code (Dev)" : "T3 Code (Beta)";
+const APP_DISPLAY_NAME = `${distribution.name} (${isDevelopment ? "Dev" : "Beta"})`;
 const APP_BUNDLE_ID = isDevelopment
-  ? `com.t3tools.t3code.dev.${devBundleIdSuffix || "local"}`
-  : "com.t3tools.t3code";
-const APP_PROTOCOL_SCHEMES = isDevelopment ? ["t3code-dev"] : ["t3code"];
+  ? `${distribution.id}.dev.${devBundleIdSuffix || "local"}`
+  : distribution.id;
+const APP_PROTOCOL_SCHEMES = [desktopScheme(isDevelopment)];
 const LAUNCHER_VERSION = 20;
 const developmentMacIconPngPath = NodePath.join(
   repoRoot,
@@ -268,8 +269,9 @@ function resolveMacBundleInfoPlistStrings(executableName) {
     CFBundleExecutable: executableName,
     CFBundleIconFile: "icon.icns",
     NSScreenCaptureUsageDescription:
-      "T3 Code captures the active window when you use the snapshot shortcut.",
-    NSDocumentsFolderUsageDescription: "T3 Code reads project files you open in the desktop app.",
+      "T3CodeKorean captures the active window when you use the snapshot shortcut.",
+    NSDocumentsFolderUsageDescription:
+      "T3CodeKorean reads project files you open in the desktop app.",
   };
 }
 
