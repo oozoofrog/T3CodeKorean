@@ -21,6 +21,7 @@ import {
   persistClientSettingsUpdate,
   prepareModelPreferencesPatch,
 } from "./useSettings";
+import { getUiLocale, subscribeUiLocale } from "./useI18n";
 import { applyServerSettingsPatch } from "@t3tools/shared/serverSettings";
 
 beforeEach(() => {
@@ -31,6 +32,33 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+it("restores the device language and publishes switches before persisting them", async () => {
+  persistenceMocks.getClientSettings.mockResolvedValueOnce({
+    ...DEFAULT_CLIENT_SETTINGS,
+    uiLanguage: "ko",
+  });
+  await ensureClientSettingsHydrated();
+  expect(getUiLocale()).toBe("ko");
+  const locales: string[] = [];
+  const unsubscribe = subscribeUiLocale(() => locales.push(getUiLocale()));
+  try {
+    await persistClientSettingsPatch({ uiLanguage: "zh-Hans" });
+    expect(locales).toEqual(["zh-Hans"]);
+    expect(persistenceMocks.setClientSettings).toHaveBeenLastCalledWith(
+      expect.objectContaining({ uiLanguage: "zh-Hans" }),
+    );
+    __resetClientSettingsPersistenceForTests();
+    persistenceMocks.getClientSettings.mockResolvedValueOnce({
+      ...DEFAULT_CLIENT_SETTINGS,
+      uiLanguage: "zh-Hans",
+    });
+    await ensureClientSettingsHydrated();
+    expect(getUiLocale()).toBe("zh-Hans");
+  } finally {
+    unsubscribe();
+  }
 });
 
 describe("client settings hydration", () => {

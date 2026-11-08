@@ -1,3 +1,5 @@
+import type { MessageKey } from "@t3tools/client-runtime/i18n";
+import { useT } from "~/hooks/useI18n";
 import { useAtomCommand } from "~/state/use-atom-command";
 import { capitalizeTerm } from "@t3tools/client-runtime/source-control-clients";
 import type { EnvironmentId, PullRequestRef, PullRequestReviewVerdict } from "@t3tools/contracts";
@@ -23,28 +25,29 @@ import {
   type PullRequestCompletionScope,
 } from "./PullRequestMarkdownTextarea";
 
+import { translateNow } from "~/lib/translateNow";
 const VERDICTS: ReadonlyArray<{
   readonly value: PullRequestReviewVerdict;
-  readonly label: string;
+  readonly labelKey: MessageKey;
   readonly sent: (term: string) => string;
   readonly icon: ReactNode;
 }> = [
   {
     value: "comment",
-    label: "Comment",
-    sent: () => "Review submitted",
+    labelKey: "review.extra.comment",
+    sent: () => translateNow("review.extra.review.submitted"),
     icon: <MessageSquareIcon className="size-3" />,
   },
   {
     value: "approve",
-    label: "Approve",
+    labelKey: "review.extra.approve",
     sent: (term) => `${capitalizeTerm(term)} approved`,
     icon: <CheckIcon className="size-3" />,
   },
   {
     value: "request-changes",
-    label: "Request changes",
-    sent: () => "Changes requested",
+    labelKey: "review.extra.request.changes",
+    sent: () => translateNow("review.extra.changes.requested"),
     icon: <XCircleIcon className="size-3" />,
   },
 ];
@@ -76,6 +79,7 @@ export function PullRequestReviewForm({
   onPendingChange: (pending: boolean) => void;
   onSubmitted: () => void;
 }) {
+  const t = useT();
   const [requestedVerdict, setRequestedVerdict] = useState<PullRequestReviewVerdict>("comment");
   const comments = usePendingReviewComments(reference);
   const reviewKey = pullRequestReviewKey(reference);
@@ -123,10 +127,10 @@ export function PullRequestReviewForm({
     if (result._tag === "Failure") {
       toastManager.add({
         type: "error",
-        title: "The review could not be submitted",
+        title: t("review.extra.the.review.could.not.be.submitted"),
         description: readableFailure(
           squashAtomCommandFailure(result),
-          "The host refused the review. Your draft is still here to try again.",
+          t("review.extra.the.host.refused.the.review.your.draft.is"),
         ),
       });
       return;
@@ -148,10 +152,10 @@ export function PullRequestReviewForm({
       : verdict === "approve" || summary.trim().length > 0 || commentCount > 0;
   const placeholder =
     selectedVerdict === undefined || canSubmit(selectedVerdict.value, "", comments.length)
-      ? "Summarize your review (optional)"
+      ? t("review.extra.summarize.your.review.optional")
       : selectedVerdict.value === "request-changes" && requestChangesSummaryRequired
-        ? "Summarize your review (required to request changes)"
-        : "Summarize your review or add line comments";
+        ? t("review.extra.summarize.your.review.required.to.request.changes")
+        : t("review.extra.summarize.your.review.or.add.line.comments");
 
   return (
     <>
@@ -162,7 +166,7 @@ export function PullRequestReviewForm({
         readOnly={speech.freezesEditor}
         value={body}
         placeholder={placeholder}
-        aria-label="Review summary"
+        aria-label={t("review.extra.review.summary")}
         onValueChange={(next) => setSummary(reviewKey, next)}
         onKeyDown={(event) => {
           if (event.nativeEvent.isComposing || event.keyCode === 229 || event.repeat) return;
@@ -188,10 +192,14 @@ export function PullRequestReviewForm({
               if (value !== null) setRequestedVerdict(value);
             }}
           >
-            <SelectTrigger size="xs" className="w-auto min-w-0" aria-label="Review verdict">
+            <SelectTrigger
+              size="xs"
+              className="w-auto min-w-0"
+              aria-label={t("review.extra.review.verdict")}
+            >
               <span className="flex items-center gap-1.5">
                 {selectedVerdict?.icon}
-                {selectedVerdict?.label}
+                {selectedVerdict ? t(selectedVerdict.labelKey) : null}
               </span>
             </SelectTrigger>
             <SelectPopup side="top" alignItemWithTrigger={false}>
@@ -199,7 +207,7 @@ export function PullRequestReviewForm({
                 <SelectItem key={verdict.value} value={verdict.value}>
                   <span className="flex items-center gap-1.5">
                     {verdict.icon}
-                    {verdict.label}
+                    {t(verdict.labelKey)}
                   </span>
                 </SelectItem>
               ))}
@@ -219,7 +227,7 @@ export function PullRequestReviewForm({
               speech.submitAfterDictation((text) => void submit(selectedVerdict, text));
           }}
         >
-          {pending ? "Submitting..." : "Submit review"}
+          {pending ? t("review.extra.submitting") : t("review.extra.submit.review")}
         </Button>
       </div>
     </>

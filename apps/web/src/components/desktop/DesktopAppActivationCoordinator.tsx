@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
 import type { DesktopAppActivationRequest } from "@t3tools/contracts";
 import { useEffect, useEffectEvent, useRef } from "react";
@@ -18,6 +19,7 @@ import { useOrchestrationCommand } from "../../state/use-orchestration-command";
 import { reportProjectFailure } from "../../hooks/useProjectGroupUpdate";
 
 export function DesktopAppActivationCoordinator() {
+  const t = useT();
   const primaryEnvironment = usePrimaryEnvironment();
   const createProject = useAtomCommand(projectEnvironment.create, { reportFailure: false });
   const updateProject = useOrchestrationCommand(projectEnvironment.update, {
@@ -86,7 +88,7 @@ export function DesktopAppActivationCoordinator() {
           void updateProject({
             environmentId: projectRef.environmentId,
             input: { projectId: projectRef.projectId, archived: false },
-          }).then((result) => reportProjectFailure("Failed to unarchive project", result));
+          }).then((result) => reportProjectFailure(t("misc.desktop.unarchiveFailed"), result));
         }
         return openThread(projectRef);
       },

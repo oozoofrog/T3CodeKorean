@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import type { EnvironmentId, PullRequestRef, PullRequestReviewGuideStop } from "@t3tools/contracts";
 import { SparklesIcon, TriangleAlertIcon } from "lucide-react";
 import { useEffect, useEffectEvent } from "react";
@@ -50,6 +51,7 @@ export function PullRequestGuideTab({
   onOpenFile: (path: string) => void;
   onTourShown?: (() => void) | undefined;
 }) {
+  const t = useT();
   const { query, data, running, canWrite, write } = useReviewGuideWriter({
     environmentId,
     reference,
@@ -95,7 +97,7 @@ export function PullRequestGuideTab({
     canWrite ? (
       <Button size={size} variant="outline" disabled={running} onClick={() => void write()}>
         {running ? <Spinner /> : <SparklesIcon aria-hidden className="size-3.5" />}
-        {running ? "Reading the change..." : label}
+        {running ? t("review.extra.reading.the.change") : label}
       </Button>
     ) : null;
 
@@ -111,20 +113,22 @@ export function PullRequestGuideTab({
       <div className="scrollbar-gutter-both flex h-full flex-col items-center justify-center-safe gap-2 overflow-y-auto px-4 py-10 text-center">
         <p className="text-sm font-medium text-foreground">
           {running
-            ? "Writing a review guide"
+            ? t("review.extra.writing.a.review.guide")
             : failure === null
-              ? "No review guide yet"
-              : "Could not write a review guide"}
+              ? t("review.extra.no.review.guide.yet")
+              : t("review.extra.could.not.write.a.review.guide")}
         </p>
         <p className="max-w-md text-xs text-muted-foreground">
           {running
-            ? "An agent is reading the change. A large one takes a few minutes. You can leave; you will be told when it is ready."
+            ? t("review.extra.an.agent.is.reading.the.change.a.large")
             : failure === null
-              ? (query.error ??
-                "A guide is a tour of the change: stops through the code in reading order, with the calls only a maintainer can make.")
-              : FAILURE_HINT}
+              ? (query.error ?? t("review.extra.a.guide.is.a.tour.of.the.change"))
+              : t("review.extra.check.the.review.guide.model.in.settings.source")}
         </p>
-        {writeButton(failure === null ? "Write guide" : "Try again", "sm")}
+        {writeButton(
+          failure === null ? t("review.extra.write.guide") : t("review.extra.try.again"),
+          "sm",
+        )}
         {failure === null || running ? null : <FailureDetails detail={failure} />}
       </div>
     );
@@ -136,12 +140,14 @@ export function PullRequestGuideTab({
         {running ? <Spinner /> : <TriangleAlertIcon />}
         <AlertDescription>
           {running ? (
-            "Rewriting this guide. You will be told when the new one is ready."
+            t("review.extra.rewriting.this.guide.you.will.be.told.when")
           ) : failure === null ? (
-            "Written before the latest push."
+            t("review.extra.written.before.the.latest.push")
           ) : (
             <>
-              {`Could not rewrite this guide. ${FAILURE_HINT}`}
+              {t("review.pr.couldNotRewriteGuide", {
+                hint: t("review.extra.check.the.review.guide.model.in.settings.source"),
+              })}
               <FailureDetails detail={failure} />
             </>
           )}
@@ -174,13 +180,12 @@ export function PullRequestGuideTab({
   );
 }
 
-const FAILURE_HINT = "Check the review guide model in Settings → Source control.";
-
 function FailureDetails({ detail }: { detail: string }) {
+  const t = useT();
   return (
     <details className="w-full max-w-lg text-xs text-muted-foreground">
       <summary className="cursor-pointer rounded-sm -outline-offset-2 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring">
-        Technical details
+        {t("review.extra.technical.details")}
       </summary>
       <pre className="scrollbar-gutter-both mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-border bg-muted/40 p-3 text-left font-mono text-xs">
         {detail}

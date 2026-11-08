@@ -1,3 +1,4 @@
+import { useT } from "~/hooks/useI18n";
 import type { AssistantCitation } from "@t3tools/contracts";
 import {
   assistantCitationLabel,
@@ -51,6 +52,7 @@ export function AssistantCitationChip({
     onRestoreFocus?: () => void;
   };
 }) {
+  const t = useT();
   const navigate = useNavigate();
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const commentPopupRef = useRef<HTMLDivElement>(null);
@@ -211,7 +213,7 @@ export function AssistantCitationChip({
                   : undefined
               }
               ref={commentPopupRef}
-              aria-label="Edit citation comment"
+              aria-label={t("chat.citation.editComment")}
               width="md"
               padding="compact"
               onPointerDown={(event) => event.stopPropagation()}
