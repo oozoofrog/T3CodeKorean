@@ -1,0 +1,40 @@
+export const koMessages = {
+  "settings.diffs.title": "변경 비교",
+  "settings.diffs.layout.title": "변경 비교 레이아웃",
+  "settings.diffs.layout.description":
+    "변경 비교를 세로 또는 나란히 표시합니다. 변경 비교 도구 모음에서도 전환할 수 있습니다.",
+  "settings.diffs.layout.resetLabel": "변경 비교 레이아웃",
+  "settings.diffs.layout.a11y": "변경 비교 레이아웃",
+  "settings.diffs.layout.stacked": "세로로",
+  "settings.diffs.layout.split": "분할",
+  "settings.diffs.whitespace.title": "공백 변경 숨기기",
+  "settings.diffs.whitespace.description":
+    "변경 비교 패널에서 공백만 바뀐 편집을 기본적으로 무시할지 설정합니다.",
+  "settings.diffs.whitespace.resetLabel": "변경 비교 공백 변경",
+  "settings.diffs.whitespace.a11y": "공백 변경 기본 숨김",
+  "settings.diffs.fileState.title": "변경 비교 파일 기본 상태",
+  "settings.diffs.fileState.description":
+    "변경 비교나 풀 리퀘스트의 코드 탭을 열 때 파일을 펼칠지 접을지 설정합니다.",
+  "settings.diffs.fileState.resetLabel": "변경 비교 파일 기본 상태",
+  "settings.diffs.fileState.a11y": "변경 비교 파일 기본 상태",
+  "settings.diffs.fileState.expanded": "펼침",
+  "settings.diffs.fileState.collapsed": "접힘",
+  "settings.diffs.colors.title": "변경 비교 색상",
+  "settings.diffs.colors.description": "변경 수를 포함하여 추가 및 삭제 색상을 선택합니다.",
+  "settings.diffs.colors.resetLabel": "변경 비교 색상",
+  "settings.diffs.colors.a11y": "변경 비교 색상",
+  "settings.diffs.colors.redGreen": "빨강 및 초록",
+  "settings.diffs.colors.redGreenDefault": "빨강 및 초록(기본값)",
+  "settings.diffs.colors.blueOrange": "파랑 및 주황",
+  "settings.diffs.pullRequests.title": "풀 리퀘스트",
+  "settings.diffs.proactivePanels.title": "풀 리퀘스트 및 변경 사항 패널 자동 열기",
+  "settings.diffs.proactivePanels.description":
+    "연결된 풀 리퀘스트를 우선 엽니다. 없으면 3개 이상 파일 또는 50줄 이상 편집 시 변경 사항을 엽니다.",
+  "settings.diffs.proactivePanels.resetLabel": "패널 자동 열기",
+  "settings.diffs.proactivePanels.a11y": "풀 리퀘스트 및 변경 사항 패널 자동 열기",
+  "settings.diffs.prLinksInApp.title": "T3 Code에서 풀 리퀘스트 열기",
+  "settings.diffs.prLinksInApp.description":
+    "풀 리퀘스트 링크를 클릭하면 T3 Code에서 엽니다. 끄면 다른 링크처럼 Git 호스트에서 엽니다.",
+  "settings.diffs.prLinksInApp.resetLabel": "T3 Code에서 풀 리퀘스트 열기",
+  "settings.diffs.prLinksInApp.a11y": "T3 Code에서 풀 리퀘스트 열기",
+} as const;
