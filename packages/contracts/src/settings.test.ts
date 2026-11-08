@@ -42,8 +42,8 @@ const encodeServerSettingsPatch = Schema.encodeSync(ServerSettingsPatch);
 const decodeClaudeSettings = Schema.decodeUnknownSync(ClaudeSettings);
 
 describe("interface language settings", () => {
-  it("preserves English for existing devices and persists explicit locale choices", () => {
-    expect(decodeClientSettings({}).uiLanguage).toBe("en");
+  it("follows the system by default and persists explicit locale choices", () => {
+    expect(decodeClientSettings({}).uiLanguage).toBe("system");
     for (const uiLanguage of ["en", "ko", "zh-Hans", "system"] as const) {
       const settings = decodeClientSettings({ uiLanguage });
       expect(decodeClientSettings(encodeClientSettings(settings)).uiLanguage).toBe(uiLanguage);

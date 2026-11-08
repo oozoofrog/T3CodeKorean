@@ -804,6 +804,11 @@ it("switches interface language without losing the composer document, selection 
   const previousLang = document.documentElement.lang;
   const stopDocumentLanguage = startDocumentLanguage();
   try {
+    await act(() => window.dispatchEvent(new Event("languagechange")));
+    expect(document.documentElement.lang).toBe("ko");
+    await expect
+      .element(screen.getByRole("textbox"))
+      .toHaveAttribute("aria-placeholder", "무엇이든 물어보세요. @ 파일, $ 스킬, / 명령");
     const editor = screen.editor;
     await act(() => {
       editor.commands.focus("end");
